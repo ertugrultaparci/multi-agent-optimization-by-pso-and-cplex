@@ -11,7 +11,7 @@ import glob
 
 
 instance = Instance()
-instance.readInstance('C:/Users/ertug/OneDrive/Masaüstü/swarm2022-main/model/model_input/Agents.csv')
+instance.readInstance('C:/Users/ertug/OneDrive/Masaüstü/multi-agent-optimization-by-pso-and-cplex/model/model_input/Agents.csv')
 optimization = Optimization()
 """
 optimization.Stage1(instance)
@@ -50,9 +50,9 @@ def agentCellList(ins):
 def swarm(instance, optimization):
     # optimization = Optimization()
     # clean 'model_output' folder to save output of stages:
-    files = glob.glob(os.path.abspath("model_output").replace('\\', '/') + '/*')
-    for f in files:
-        os.remove(f)
+    #files = glob.glob("C:/Users/ertug/OneDrive/Masaüstü/multi-agent-optimization-by-pso-and-cplex/model/model_output/")
+    #for f in files:
+    #    os.remove(f)
 
     # solve optimization model of stage 1 and 2, run stage 3:
     optimization.Stage1(instance)
@@ -79,7 +79,7 @@ def swarm(instance, optimization):
         optimization.Stage4(instance, t, sigma_matrix)
 
         # find the path of the solution of stage 4:
-        filename_stage4solution = 'C:/Users/ertug/OneDrive/Masaüstü/swarm2022-main/model/model_output/stage4solution.json'
+        filename_stage4solution = 'C:/Users/ertug/OneDrive/Masaüstü/multi-agent-optimization-by-pso-and-cplex/model/model_output/stage4solution.json'
 
         # change agents location according to the solution of stage 4:
         stage4Solution(instance, filename_stage4solution)
@@ -114,7 +114,7 @@ def swarm(instance, optimization):
     # print("Length:", len(instance.coveredCells), 'should equal to = ', len(instance.Cells) - len(instance.DeniedCells))
 
     # create a file named 'visitedCell.txt' to hold the route of agents according to stage 4:
-    with open("C:/Users/ertug/OneDrive/Masaüstü/swarm2022-main/model/model_output/visitedCell.txt", "w") as file:
+    with open("C:/Users/ertug/OneDrive/Masaüstü/multi-agent-optimization-by-pso-and-cplex/model/model_output/visitedCell.txt", "w") as file:
         file.write(str(instance.visitedCells))
 
 

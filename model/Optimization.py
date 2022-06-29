@@ -11,12 +11,12 @@ from model.model_stages.Stage3 import calculateRatio
 class Optimization:
     def __init__(self):
         self.L = None
-        self.filename_swarmModel1 = "C:/Users/ertug/OneDrive/Masaüstü/swarm2022-main/model/model_output/swarmModel1.lp"
-        self.filename_stage1solution = "C:/Users/ertug/OneDrive/Masaüstü/swarm2022-main/model/model_output/stage1solution.json"
-        self.filename_swarmModel2 = "C:/Users/ertug/OneDrive/Masaüstü/swarm2022-main/model/model_output/swarmModel2.lp"
-        self.filename_stage2solution = "C:/Users/ertug/OneDrive/Masaüstü/swarm2022-main/model/model_output/stage2solution.json"
-        self.filename_swarmModel4 = "C:/Users/ertug/OneDrive/Masaüstü/swarm2022-main/model/model_output/swarmModel4.lp"
-        self.filename_stage4solution = "C:/Users/ertug/OneDrive/Masaüstü/swarm2022-main/model/model_output/stage4solution.json"
+        self.filename_swarmModel1 = "C:/Users/ertug/OneDrive/Masaüstü/multi-agent-optimization-by-pso-and-cplex/model/model_output/swarmModel1.lp"
+        self.filename_stage1solution = "C:/Users/ertug/OneDrive/Masaüstü/multi-agent-optimization-by-pso-and-cplex/model/model_output/stage1solution.json"
+        self.filename_swarmModel2 = "C:/Users/ertug/OneDrive/Masaüstü/multi-agent-optimization-by-pso-and-cplex/model/model_output/swarmModel2.lp"
+        self.filename_stage2solution = "C:/Users/ertug/OneDrive/Masaüstü/multi-agent-optimization-by-pso-and-cplex/model/model_output/stage2solution.json"
+        self.filename_swarmModel4 = "C:/Users/ertug/OneDrive/Masaüstü/multi-agent-optimization-by-pso-and-cplex/model/model_output/swarmModel4.lp"
+        self.filename_stage4solution = "C:/Users/ertug/OneDrive/Masaüstü/multi-agent-optimization-by-pso-and-cplex/model/model_output/stage4solution.json"
 
     def Stage1(self, instance):
 
@@ -203,10 +203,10 @@ class Optimization:
         initialLocation(instance, self.filename_stage2solution)
 
         # apply Particle Swarm Optimization to obtain fully connected swarm:
-        PSO(instance, MaxIt=100, nPop=1, w=1, wDamp=0.99, c1=2, c2=2)
+        #PSO(instance, MaxIt=100, nPop=1, w=1, wDamp=0.99, c1=2, c2=2)
 
         #initial_location = [19, 39, 1, 40]
-        initial_location = [20, 39, 1, 40]
+        initial_location = [1, 20, 39, 40]
         for i in range(len(instance.Agents)):
             instance.Agents[i].setCurrCell(instance.findCellFromId(initial_location[i]))
 
