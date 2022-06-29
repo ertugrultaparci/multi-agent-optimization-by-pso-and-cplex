@@ -1,5 +1,7 @@
 venv/
 
+.idea/
+
 visitedCell.txt
 
 *.lp
