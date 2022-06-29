@@ -117,7 +117,13 @@ class Optimization:
         initializeCells(instance)
         initializeBoundaryCells(instance)
 
+        # get cell center info:
+        cellCenterListXLoc(instance)
+
         # decrease some cells from the boundary cells due to denied zone:
+        # setting denied zone:
+        deniedCells = [19, 29, 30, 59, 60, 79, 90]
+        instance.setDeniedCells(deniedCells)
 
         # Let's calculate Stage 2:
         swarmModel2 = Model('stage2')
@@ -200,13 +206,16 @@ class Optimization:
         solution2.export(self.filename_stage2solution)
 
         # Initialize the location after obtain the result of unbalanced assignment problem.
+        print('Stage 2 final solution:')
         initialLocation(instance, self.filename_stage2solution)
 
         # apply Particle Swarm Optimization to obtain fully connected swarm:
         #PSO(instance, MaxIt=100, nPop=1, w=1, wDamp=0.99, c1=2, c2=2)
 
         #initial_location = [19, 39, 1, 40]
-        initial_location = [1, 20, 39, 40]
+        #initial_location = [1, 20, 39, 40]
+        #initial_location = [72, 52, 93, 38, 47, 54, 55]
+        initial_location = [70, 94, 93, 49]
         for i in range(len(instance.Agents)):
             instance.Agents[i].setCurrCell(instance.findCellFromId(initial_location[i]))
 

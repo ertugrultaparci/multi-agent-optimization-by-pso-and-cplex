@@ -8,10 +8,9 @@ from model.model_stages.Stage4 import *
 import os
 import glob
 
-
-
 instance = Instance()
-instance.readInstance('C:/Users/ertug/OneDrive/Masaüstü/multi-agent-optimization-by-pso-and-cplex/model/model_input/Agents.csv')
+instance.readInstance(
+    'C:/Users/ertug/OneDrive/Masaüstü/multi-agent-optimization-by-pso-and-cplex/model/model_input/Agents.csv')
 optimization = Optimization()
 """
 optimization.Stage1(instance)
@@ -48,20 +47,11 @@ def agentCellList(ins):
 
 
 def swarm(instance, optimization):
-    # optimization = Optimization()
-    # clean 'model_output' folder to save output of stages:
-    #files = glob.glob("C:/Users/ertug/OneDrive/Masaüstü/multi-agent-optimization-by-pso-and-cplex/model/model_output/")
-    #for f in files:
-    #    os.remove(f)
-
     # solve optimization model of stage 1 and 2, run stage 3:
     optimization.Stage1(instance)
     optimization.Stage2(instance)
     optimization.Stage3(instance)
-    
-    # setting denied zone:
-    deniedCells = [19, 29, 30, 59, 60, 79, 90]
-    instance.setDeniedCells(deniedCells)
+    print('Stage 4:')
 
     # initialize 'a_matrix' to be used in order to find coverage of cells:
     a_matrix = aMatrix(instance)
@@ -76,6 +66,7 @@ def swarm(instance, optimization):
     findRoute(instance, t=0)
     t = 1
     while not scanIsDone(instance):
+
         optimization.Stage4(instance, t, sigma_matrix)
 
         # find the path of the solution of stage 4:
@@ -97,7 +88,8 @@ def swarm(instance, optimization):
             t += 1
 
             # change location of Agents to not scanned cells:
-            changeLocationToNotScannedCell(instance)
+            # changeLocationToNotScannedCell(instance)
+            changeLoc(instance)
 
             # find visited cells to use in 'Airsim Simulation'
             findRoute(instance, t)
@@ -114,9 +106,11 @@ def swarm(instance, optimization):
     # print("Length:", len(instance.coveredCells), 'should equal to = ', len(instance.Cells) - len(instance.DeniedCells))
 
     # create a file named 'visitedCell.txt' to hold the route of agents according to stage 4:
-    with open("C:/Users/ertug/OneDrive/Masaüstü/multi-agent-optimization-by-pso-and-cplex/model/model_output/visitedCell.txt", "w") as file:
+    with open(
+            "C:/Users/ertug/OneDrive/Masaüstü/multi-agent-optimization-by-pso-and-cplex/model/model_output/visitedCell.txt",
+            "w") as file:
         file.write(str(instance.visitedCells))
 
 
-swarm(instance, optimization)
-
+with ContextTimer("stage=%d" % 1):
+    swarm(instance, optimization)

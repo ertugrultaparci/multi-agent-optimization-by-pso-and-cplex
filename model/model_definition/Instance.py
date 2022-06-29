@@ -67,6 +67,7 @@ class Instance:
         self.dictOfCoverage = {}
         self.cellIDFromPreviousTime = []
         self.visitedCells = {}
+        self.cellCenter = {}
 
     def readInstance(self, fileName):
         drone_list = read_settings('C:/Users/ertug/OneDrive/Belgeler/AirSim/settings.json')
@@ -181,6 +182,16 @@ class Instance:
         return math.sqrt(
             math.pow(cell1.center[0] - cell2.center[0], 2) + math.pow(cell1.center[1] - cell2.center[1], 2))
 
+    def xAndYDistanceBtwTwoCells(self, cellId1, cellId2):
+
+        if cellId1 == cellId2:
+            return 0
+
+        cell1 = self.findCellFromId(cellId1)
+        cell2 = self.findCellFromId(cellId2)
+
+        return cell1.center[0] - cell2.center[0],  cell1.center[1] - cell2.center[1]
+
     def distanceMatrixOfAgents(self, edge_list):
         g = Graph()
 
@@ -284,11 +295,9 @@ class Instance:
                 return i
 
     def findCellFromId(self, cell_id):
-        c = Cell()
         for cell in self.Cells:
             if cell_id == cell.getID():
-                c = cell
-        return c
+                return cell
 
     def inWhichCell_ID(self, x, y):
         for cell in self.Cells:
@@ -410,6 +419,12 @@ class Instance:
             cell_id_list.append(agent.getCurrCell().getID())
         return cell_id_list
 
+    def idListOfBoundaryCells(self):
+        cell_id_boundary_cell = []
+        for cell in self.BoundaryCells:
+            cell_id_boundary_cell.append(cell.getID())
+        return cell_id_boundary_cell
+
     def setDeniedCells(self, deniedCells):
         for denied in deniedCells:
             self.findCellFromId(denied).setDenied()
@@ -418,11 +433,18 @@ class Instance:
         self.dictOfCoverage = {k: v for k, v in self.dictOfCoverage.items() if k not in deniedCells}
 
     def findAgentFromName(self, agentName):
-        a = Agent()
+        #a = Agent()
         for agent in self.Agents:
             if agentName == agent.getName():
-                a = agent
-        return a
+                return agent
+
+    def findAgentCloserToACell(self, cell_id):
+        distance_dict = {}
+        for agent in self.Agents:
+            distance_dict[agent.getName()] = self.distanceBtwTwoCells(cell_id, agent.getCurrCell().getID())
+        return self.findAgentFromName(min(distance_dict, key=distance_dict.get))
+
+
 
 def find_negative(line):
     s_nums = re.findall(r'-?\d+', line)

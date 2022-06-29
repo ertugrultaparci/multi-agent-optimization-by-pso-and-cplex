@@ -69,15 +69,16 @@ def moveACell(client, instance, f_list, t, cell_index):
     f_list.clear()
 
 
-def moveACellSingleDrone(client, instance, t, cell_index, agent):
+def moveACellSingleDrone(client, instance, t, cell_index, agent, z):
     v_x = (instance.Cells[cell_index].getCenter()[0] - formation.drone_state(client, agent)['x']) / t
     v_y = (instance.Cells[cell_index].getCenter()[1] - formation.drone_state(client, agent)['y']) / t
-    return client.moveByVelocityAsync(v_x, v_y, 0, t, vehicle_name=agent.getName())
+    return client.moveByVelocityZAsync(v_x, v_y, z, t, vehicle_name=agent.getName())
 
 
 def moveForIteration(client, instance, t, f_list, cell_list):
     for i in range(len(instance.Agents)):
-        f_list.append(moveACellSingleDrone(client, instance, t, cell_index=cell_list[i], agent=instance.Agents[i]))
+        f_list.append(moveACellSingleDrone(client, instance, t, cell_index=cell_list[i], agent=instance.Agents[i], z=-20-i))
+        print(client.getMultirotorState(vehicle_name=instance.Agents[i].getName()).kinematics_estimated.position.z_val)
 
     for f in f_list:
         f.join()
@@ -110,7 +111,7 @@ def scanArea(client, instance, f_list, t):
 
 def moveBasePosition(client, instance, f_list, t):
     for j in instance.Agents:
-        agent_base_position = j.basePosition
+        agent_base_position = j.getBasePosition()
         v_x = (agent_base_position[0] - formation.drone_state(client, j)['x']) / t
         v_y = (agent_base_position[1] - formation.drone_state(client, j)['y']) / t
         f_list.append(client.moveByVelocityAsync(v_x, v_y, 0, t, vehicle_name=j.getName()))

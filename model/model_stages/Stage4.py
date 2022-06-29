@@ -2,6 +2,7 @@ import json
 import math
 from itertools import permutations
 
+import numpy as np
 import pandas as pd
 
 from model.model_definition.Instance import variableDivision
@@ -210,3 +211,78 @@ def changeLocationToNotScannedCell(instance):
 
     for i in range(len(instance.Agents)):
         instance.Agents[i].setCurrCell(instance.findCellFromId(id + i))
+
+
+def changeLoc(instance):
+    min = 10
+    id = None
+    for k, v in instance.dictOfCoverage.items():
+        if v < min:
+            min = v
+
+    for k, v in instance.dictOfCoverage.items():
+        if v == min:
+            id = k
+            break
+
+    agent_to_move = instance.findAgentCloserToACell(id)
+    x_dist, y_dist = instance.xAndYDistanceBtwTwoCells(id, agent_to_move.getCurrCell().getID())
+
+    agent_to_move.setCurrCell(instance.findCellFromId(id))
+    instance.cellCenter.pop(id)
+
+    for agent in instance.Agents:
+        if agent.getName() != agent_to_move.getName():
+            new_x_coord = agent.getCurrCell().getCenter()[0] + x_dist
+            new_y_coord = agent.getCurrCell().getCenter()[1] + y_dist
+
+            cond, cell_id = isACell(instance, new_x_coord, new_y_coord)
+            if cond:
+                agent.setCurrCell(instance.findCellFromId(cell_id))
+                instance.cellCenter.pop(cell_id)
+            else:
+                cell = findCloserCellWithCoordinates(instance, new_x_coord, new_y_coord)
+                agent.setCurrCell(cell)
+                instance.cellCenter.pop(cell.getID())
+
+
+def closest_value(input_list, input_value):
+    arr = np.asarray(input_list)
+
+    i = (np.abs(arr - input_value)).argmin()
+
+    return arr[i]
+
+
+def isACell(instance, x_coord, y_coord):
+    res = False
+    cell_id = 0
+    for k, v in instance.cellCenter.items():
+        if x_coord == v[0] and y_coord == v[1]:
+            res = True
+            cell_id = k
+    return res, cell_id
+
+
+def calculateDist_to_cell(instance, x, y):
+    dist = {}
+    for k, v in instance.cellCenter.items():
+        dist[k] = math.sqrt(math.pow(v[0] - x, 2) + math.pow(v[1] - y, 2))
+
+    return min(dist, key=dist.get)
+
+
+def findCloserCellWithCoordinates(instance, x_coord, y_coord):
+    #x_list = [x for x, y in instance.cellCenter.values()]
+    #y_list = [y for x, y in instance.cellCenter.values()]
+
+    #new_x = closest_value(x_list, x_coord)
+    #new_y = closest_value(y_list, y_coord)
+
+    # cell = instance.findCellFromId(instance.inWhichCellWithCenterInfo(new_x, new_y))
+    #cell = instance.findCellFromId(list(instance.cellCenter.keys())[list(instance.cellCenter.values()).index((new_x, new_y))])
+
+    cell_id = calculateDist_to_cell(instance, x_coord, y_coord)
+
+    cell = instance.findCellFromId(cell_id)
+    return cell

@@ -12,7 +12,8 @@ class Cell:
         self.edgeLength = None
         self.edgeWidth = None
         self.isDenied = False
-        self.coverageRequirement = 2
+        self.isBoundary = False
+        self.coverageRequirement = 2 # f-value
 
     def print(self):
         print(
@@ -36,6 +37,10 @@ class Cell:
 
     def setDenied(self):
         self.isDenied = True
+
+    def setBoundary(self):
+        self.isBoundary = True
+
 
 
 

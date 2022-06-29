@@ -1,4 +1,5 @@
 import random
+import numpy as np
 
 
 def PSO(ins, MaxIt, nPop, w, wDamp, c1, c2):
@@ -70,7 +71,7 @@ def PSO(ins, MaxIt, nPop, w, wDamp, c1, c2):
 
                 # update global best:
                 if particle.BestCost < glob.BestCost:
-                    glob.BestPosition = [a+1 for a in particle.BestPosition]
+                    glob.BestPosition = [a-1 for a in particle.BestPosition]
 
                     for k in range(len(ins.Agents)):
                         ins.Agents[k].setCurrCell(ins.findCellFromId(glob.BestPosition[k]))
@@ -110,7 +111,7 @@ def PSO(ins, MaxIt, nPop, w, wDamp, c1, c2):
             particle.Velocity = [sum(item) for item in zip(v1, v2, v3)]
 
             # update position
-            particle.Position = [int(sum(item)) for item in zip(particle.Position, particle.Velocity)]
+            particle.Position = [closest_value(ins.idListOfBoundaryCells(), int(sum(item))) for item in zip(particle.Position, particle.Velocity)]
 
             print('initial particle position', particle.Position)
 
@@ -160,3 +161,11 @@ class Parameters:
 
         self.c1 = None
         self.c2 = None
+
+
+def closest_value(input_list, input_value):
+    arr = np.asarray(input_list)
+
+    i = (np.abs(arr - input_value)).argmin()
+
+    return arr[i]

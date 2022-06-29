@@ -8,6 +8,7 @@ from model.model_definition.Cell import Cell
 from model.model_definition.Instance import variableDivision
 from model.model_stages.Stage4 import dictOfCoveredCells
 
+
 def initializeInstanceForChosenDrones(instance, filename):
     chosen_list = chosen_drones(instance, filename)
 
@@ -157,13 +158,17 @@ def initializeCells(instance):
 def initializeBoundaryCells(instance):
     for i in range(instance.nCol - 1):
         instance.BoundaryCells.append(instance.Cells[i])
+        instance.Cells[i].setBoundary()
 
     for i in range(instance.nRow - 1):
         instance.BoundaryCells.append(instance.Cells[((i + 1) * instance.nCol) - 1])
+        instance.Cells[((i + 1) * instance.nCol) - 1].setBoundary()
         instance.BoundaryCells.append(instance.Cells[(i + 1) * instance.nCol])
+        instance.Cells[(i + 1) * instance.nCol].setBoundary()
 
     for i in range(instance.nCol * (instance.nRow - 1) + 1, len(instance.Cells)):
         instance.BoundaryCells.append(instance.Cells[i])
+        instance.Cells[i].setBoundary()
 
 
 def distanceBtwBaseLocationAndBoundaryCells(instance):
@@ -219,4 +224,12 @@ def initialLocation(instance, filename):
 
             for agent in instance.Agents:
                 if var_list[0] == agent.getType() and var_list[1] == agent.getIndis():
+                    print(f' z_{agent.getType()}_{agent.getIndis()}_{instance.BoundaryCells[var_list[2]].getID()}_0')
                     agent.setCurrCell(instance.BoundaryCells[var_list[2]])
+
+
+def cellCenterListXLoc(instance):
+    for cell in instance.Cells:
+        if not cell.isDenied:
+            instance.cellCenter[cell.getID()] = cell.getCenter()[0], cell.getCenter()[1]
+
