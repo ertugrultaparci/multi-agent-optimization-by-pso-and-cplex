@@ -1,1 +1,9 @@
-model/model_output/
+
+
+visitedCell.txt
+
+*.lp
+
+stage1solution.json
+stage2solution.json
+stage4solution.json
