@@ -3,6 +3,7 @@ import os
 
 from docplex.mp.model import Model
 
+from heuristics.PSOwithcoordinates import PSOwithcoords
 from heuristics.Pso import PSO
 from model.model_stages.Stage2 import *
 from model.model_stages.Stage3 import calculateRatio
@@ -117,13 +118,17 @@ class Optimization:
         initializeCells(instance)
         initializeBoundaryCells(instance)
 
-        # get cell center info:
-        cellCenterListXLoc(instance)
-
         # decrease some cells from the boundary cells due to denied zone:
         # setting denied zone:
         deniedCells = [19, 29, 30, 59, 60, 79, 90]
         instance.setDeniedCells(deniedCells)
+
+        # get cell center info:
+        cellCenterListXLoc(instance)
+
+        # get boundary Cell center info:
+        # get cell center info:
+        boundaryCellCenterListXLoc(instance)
 
         # Let's calculate Stage 2:
         swarmModel2 = Model('stage2')
@@ -210,14 +215,19 @@ class Optimization:
         initialLocation(instance, self.filename_stage2solution)
 
         # apply Particle Swarm Optimization to obtain fully connected swarm:
-        #PSO(instance, MaxIt=100, nPop=1, w=1, wDamp=0.99, c1=2, c2=2)
+        PSO(instance, MaxIt=100, nPop=1, w=1, wDamp=0.99, c1=2, c2=2)
+        #PSOwithcoords(instance, MaxIt=100, nPop=1, w=1, wDamp=0.99, c1=2, c2=2)
 
-        #initial_location = [19, 39, 1, 40]
-        #initial_location = [1, 20, 39, 40]
-        #initial_location = [72, 52, 93, 38, 47, 54, 55]
-        initial_location = [70, 94, 93, 49]
+        #initial_location = [80, 39, 50, 97]  # cost with 100
+        #initial_location = [80, 98, 97] #cost 70
+        initial_location = [80, 39, 40, 98] #
+
+
         for i in range(len(instance.Agents)):
             instance.Agents[i].setCurrCell(instance.findCellFromId(initial_location[i]))
+
+        comm_matrix = instance.connectivity_matrix()
+        print(comm_matrix)
 
     def Stage3(self, instance):
 
@@ -225,7 +235,6 @@ class Optimization:
         max_r = max([r for d, r in r_dict.items()])
         leader_agent = list(r_dict.keys())[list(r_dict.values()).index(max_r)]
         instance.findAgentFromName(leader_agent).makeLeader()
-
 
         print('Stage 3 solution:')
         instance.findAgentFromName(leader_agent).printAgent()
@@ -244,6 +253,7 @@ class Optimization:
                     drone_names.append(k.replace('Drone', ''))
             if (len(set(drone_names))) == 1:
                 return True
+
         while not check_negotiation(temp_leader_dict):
             for agent in instance.Agents:
                 agent_ID = agent.getName().replace('Drone', '')
@@ -254,7 +264,8 @@ class Optimization:
                 for agent2 in instance.Agents:
                     agent2_ID = agent2.getName().replace('Drone', '')
                     if agent_ID != agent2_ID and comm_matrix.loc[agent2_ID, agent_ID] == 1:
-                        ratio_dict[list(temp_leader_dict[agent2.getName()].keys())[0]] = list(temp_leader_dict[agent2.getName()].values())[0]
+                        ratio_dict[list(temp_leader_dict[agent2.getName()].keys())[0]] = \
+                        list(temp_leader_dict[agent2.getName()].values())[0]
                 max_r = max([r for d, r in ratio_dict.items()])
                 leader_agent = list(ratio_dict.keys())[list(ratio_dict.values()).index(max_r)]
                 temp_leader_dict[agent.getName()] = {leader_agent: max_r}
@@ -264,9 +275,7 @@ class Optimization:
         print(temp_leader_dict)
         print('END')
 
-
-
-        #Leader Selection During the Mission:
+        # Leader Selection During the Mission:
         """
         for r in range(len(instance.r_dict)):
         

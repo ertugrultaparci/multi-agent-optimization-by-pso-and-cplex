@@ -68,6 +68,7 @@ class Instance:
         self.cellIDFromPreviousTime = []
         self.visitedCells = {}
         self.cellCenter = {}
+        self.boundaryCellCenter = {}
 
     def readInstance(self, fileName):
         drone_list = read_settings('C:/Users/ertug/OneDrive/Belgeler/AirSim/settings.json')
@@ -422,7 +423,8 @@ class Instance:
     def idListOfBoundaryCells(self):
         cell_id_boundary_cell = []
         for cell in self.BoundaryCells:
-            cell_id_boundary_cell.append(cell.getID())
+            if not cell.isDenied:
+                cell_id_boundary_cell.append(cell.getID())
         return cell_id_boundary_cell
 
     def setDeniedCells(self, deniedCells):
@@ -443,6 +445,26 @@ class Instance:
         for agent in self.Agents:
             distance_dict[agent.getName()] = self.distanceBtwTwoCells(cell_id, agent.getCurrCell().getID())
         return self.findAgentFromName(min(distance_dict, key=distance_dict.get))
+
+    def cost_func_for_stage4_pso(self):
+        n = 0
+        for k, v in self.dictOfCoverage.items():
+            coverage_req = self.findCellFromId(k).coverageRequirement
+            if v >= coverage_req:
+                n += 1
+
+        return len(self.Cells) - len(self.DeniedCells) - n
+
+    def findCellCloserToACell(self, cell_id, cell_set):
+        cell_list = []
+
+        for cell_id in cell_set:
+            cell_list.append(self.findCellFromId(cell_id))
+
+        distance_dict = {}
+        for cell in cell_list:
+            distance_dict[cell.getID()] = self.distanceBtwTwoCells(cell_id, cell.getID())
+        return self.findCellFromId(min(distance_dict, key=distance_dict.get))
 
 
 

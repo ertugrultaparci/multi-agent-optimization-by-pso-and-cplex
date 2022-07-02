@@ -43,9 +43,9 @@ def initializeInstanceForChosenDrones(instance, filename):
             elif agent.type == 2:
                 type_2.append(agent.indis)
 
-    instance.TypeAgentIndices['0'] = list(range(0, len(type_0)))
-    instance.TypeAgentIndices['1'] = list(range(0, len(type_1)))
-    instance.TypeAgentIndices['2'] = list(range(0, len(type_2)))
+    instance.TypeAgentIndices['0'] = [a for a in type_0]
+    instance.TypeAgentIndices['1'] = [a for a in type_1]
+    instance.TypeAgentIndices['2'] = [a for a in type_2]
 
     instance.AgentIndexSet.append(instance.TypeAgentIndices.get('0'))
     instance.AgentIndexSet.append(instance.TypeAgentIndices.get('1'))
@@ -233,3 +233,8 @@ def cellCenterListXLoc(instance):
         if not cell.isDenied:
             instance.cellCenter[cell.getID()] = cell.getCenter()[0], cell.getCenter()[1]
 
+
+def boundaryCellCenterListXLoc(instance):
+    for cell in instance.BoundaryCells:
+        if not cell.isDenied:
+            instance.boundaryCellCenter[cell.getID()] = cell.getCenter()[0], cell.getCenter()[1]

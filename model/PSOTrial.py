@@ -1,3 +1,4 @@
+from heuristics.pso_for_scanning import PSOforScanning
 from model.Optimization import Optimization
 from model.Timer import ContextTimer
 from model.model_definition.Cell import Cell
@@ -59,52 +60,14 @@ def swarm(instance, optimization):
     # initialize 'sigma_matrix' :
     sigma_matrix = sigmaMatrix(instance)
 
-    # check coverage:
-    findScannedCells(instance, a_matrix)
+    PSOforScanning(instance, MaxIt=100, nPop=1, w=1, wDamp=0.99, c1=2, c2=2, sigma_matrix=sigma_matrix,
+                   a_matrix=a_matrix)
 
-    # find visited cells to use in 'Airsim Simulation'
-    findRoute(instance, t=0)
+
     t = 1
-    while not scanIsDone(instance):
 
-        optimization.Stage4(instance, t, sigma_matrix)
 
-        # find the path of the solution of stage 4:
-        filename_stage4solution = 'C:/Users/ertug/OneDrive/Masaüstü/multi-agent-optimization-by-pso-and-cplex/model/model_output/stage4solution.json'
 
-        # change agents location according to the solution of stage 4:
-        stage4Solution(instance, filename_stage4solution)
-
-        # find visited cells to use in 'Airsim Simulation'
-        findRoute(instance, t)
-
-        # check coverage:
-        a = findScannedCells(instance, a_matrix)
-        print('which cells scanned in this iteration:', a)
-        print('which cells completed:', instance.coveredCells)
-
-        if objective_value(filename_stage4solution) == len(instance.Agents) * 100:
-            # increase time by 1
-            t += 1
-
-            # change location of Agents to not scanned cells:
-            changeLoc(instance)
-
-            # find visited cells to use in 'Airsim Simulation'
-            findRoute(instance, t)
-
-            # check coverage:
-            a = findScannedCells(instance, a_matrix)
-            print('which cells scanned in this iteration:', a)
-            print('which cells completed:', instance.coveredCells)
-
-        t += 1
-
-    optimization.L = t - 1
-    print("Lifetime: ", optimization.L)
-    # print("Length:", len(instance.coveredCells), 'should equal to = ', len(instance.Cells) - len(instance.DeniedCells))
-
-    # create a file named 'visitedCell.txt' to hold the route of agents according to stage 4:
     with open(
             "C:/Users/ertug/OneDrive/Masaüstü/multi-agent-optimization-by-pso-and-cplex/model/model_output/visitedCell.txt",
             "w") as file:

@@ -159,7 +159,8 @@ def findNotScannedCells(instance):
 def scanIsDone(instance):
     n = 0
     for k, v in instance.dictOfCoverage.items():
-        if v >= 2:
+        coverage_req = instance.findCellFromId(k).coverageRequirement
+        if v >= coverage_req:
             n += 1
     if n == len(instance.Cells) - len(instance.DeniedCells):
         isDone = True
@@ -273,16 +274,18 @@ def calculateDist_to_cell(instance, x, y):
 
 
 def findCloserCellWithCoordinates(instance, x_coord, y_coord):
-    #x_list = [x for x, y in instance.cellCenter.values()]
-    #y_list = [y for x, y in instance.cellCenter.values()]
-
-    #new_x = closest_value(x_list, x_coord)
-    #new_y = closest_value(y_list, y_coord)
-
-    # cell = instance.findCellFromId(instance.inWhichCellWithCenterInfo(new_x, new_y))
-    #cell = instance.findCellFromId(list(instance.cellCenter.keys())[list(instance.cellCenter.values()).index((new_x, new_y))])
-
     cell_id = calculateDist_to_cell(instance, x_coord, y_coord)
 
     cell = instance.findCellFromId(cell_id)
     return cell
+
+
+def cost_func_for_stage4_pso(instance):
+    n = 0
+    for k, v in instance.dictOfCoverage.items():
+        coverage_req = instance.findCellFromId(k).coverageRequirement
+        if v >= coverage_req:
+            n += 1
+
+    return len(instance.Cells) - len(instance.DeniedCells) - n
+

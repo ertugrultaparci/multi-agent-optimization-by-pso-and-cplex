@@ -20,8 +20,8 @@ swarm(instance, optimization)
 
 # Let's open simulation environment:
 time.sleep(2)
-os.startfile("D:/AirSim Packages/MSBuild2018/WindowsNoEditor/MSBuild2018.exe") # Open any program, text or office document
-time.sleep(10)
+#os.startfile("D:/AirSim Packages/MSBuild2018/WindowsNoEditor/MSBuild2018.exe") # Open any program, text or office document
+#time.sleep(10)
 
 client = airsim.MultirotorClient()
 client.confirmConnection()
@@ -30,7 +30,7 @@ f_list = []
 
 simulation.takeoff(client, instance, f_list)
 
-time.sleep(1)
+time.sleep(5)
 
 simulation.moveUp(client, instance, f_list)
 
@@ -71,3 +71,9 @@ for k, v in visitedCell.items():
 # simulation.waitASecond(client, instance, f_list)
 
 simulation.moveBasePosition(client, instance, f_list, t=15)
+
+
+for agent in instance.Agents:
+    vehicle = agent.getName()
+    print('Cell0:  ', client.getMultirotorState(vehicle_name=vehicle).kinematics_estimated.position)
+    print('Cell0 with drone_state:', formation.drone_state(client, agent))
