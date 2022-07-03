@@ -4,7 +4,7 @@ import os
 from docplex.mp.model import Model
 
 from heuristics.PSOwithcoordinates import PSOwithcoords
-from heuristics.Pso import PSO
+from heuristics.PsoForBoundary import PSO
 from model.model_stages.Stage2 import *
 from model.model_stages.Stage3 import calculateRatio
 
@@ -214,13 +214,15 @@ class Optimization:
         print('Stage 2 final solution:')
         initialLocation(instance, self.filename_stage2solution)
 
+        print(instance.connectivity_matrix())
+
         # apply Particle Swarm Optimization to obtain fully connected swarm:
-        PSO(instance, MaxIt=100, nPop=1, w=1, wDamp=0.99, c1=2, c2=2)
+        #PSO(instance, MaxIt=100, nPop=1, w=1, wDamp=0.99, c1=2, c2=2)
         #PSOwithcoords(instance, MaxIt=100, nPop=1, w=1, wDamp=0.99, c1=2, c2=2)
 
         #initial_location = [80, 39, 50, 97]  # cost with 100
         #initial_location = [80, 98, 97] #cost 70
-        initial_location = [80, 39, 40, 98] #
+        initial_location = [80, 39, 40, 98]
 
 
         for i in range(len(instance.Agents)):
@@ -237,9 +239,17 @@ class Optimization:
         instance.findAgentFromName(leader_agent).makeLeader()
 
         print('Stage 3 solution:')
+        print(f'{instance.findAgentFromName(leader_agent).getName()} was chosen as Leader with the ratio {round(max_r,2)}')
+        print(f'x_bar_{instance.findAgentFromName(leader_agent).getType()}{instance.findAgentFromName(leader_agent).getIndis()} = 1')
         instance.findAgentFromName(leader_agent).printAgent()
 
     def Stage3_part2(self, instance):
+        instance.eleminateLeaderAgent()
+        k = 3
+        for agent in instance.Agents:
+            agent.setCurrCell(instance.findCellFromId(k))
+            k += 1
+
         comm_matrix = instance.connectivity_matrix()
         r_dict = calculateRatio(instance)
         temp_leader_dict = {}
@@ -269,18 +279,15 @@ class Optimization:
                 max_r = max([r for d, r in ratio_dict.items()])
                 leader_agent = list(ratio_dict.keys())[list(ratio_dict.values()).index(max_r)]
                 temp_leader_dict[agent.getName()] = {leader_agent: max_r}
-            print(temp_leader_dict)
-            print(not check_negotiation(temp_leader_dict))
-        print('START')
-        print(temp_leader_dict)
-        print('END')
 
-        # Leader Selection During the Mission:
-        """
-        for r in range(len(instance.r_dict)):
-        
-            for agent in instance.Agents:
-        """
+        new_leader = instance.findAgentFromName(list(list(temp_leader_dict.values())[0].keys())[0])
+        new_leader.makeLeader()
+
+        print('Stage 3 Part 2 solution:')
+        print(
+            f'{new_leader.getName()} was chosen as new Leader with negotiation')
+        print(
+            f'x_bar_{new_leader.getType()}{new_leader.getIndis()} = 1')
 
     def Stage4(self, instance, t, sigma_matrix):
 

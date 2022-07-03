@@ -325,6 +325,15 @@ class Instance:
 
         return comm_should_be - communication_rate
 
+    def cost_func_for_stage4_pso(self):
+        n = 0
+        for k, v in self.dictOfCoverage.items():
+            coverage_req = self.findCellFromId(k).coverageRequirement
+            if v >= coverage_req:
+                n += 1
+
+        return len(self.Cells) - len(self.DeniedCells) - n
+
     def uniqueCellID(self, particle_pos):
 
         if len(set(particle_pos)) == len(particle_pos):
@@ -446,14 +455,39 @@ class Instance:
             distance_dict[agent.getName()] = self.distanceBtwTwoCells(cell_id, agent.getCurrCell().getID())
         return self.findAgentFromName(min(distance_dict, key=distance_dict.get))
 
-    def cost_func_for_stage4_pso(self):
-        n = 0
-        for k, v in self.dictOfCoverage.items():
-            coverage_req = self.findCellFromId(k).coverageRequirement
-            if v >= coverage_req:
-                n += 1
 
-        return len(self.Cells) - len(self.DeniedCells) - n
+
+    def fitting_func(self, t, N_set):
+        # Define ranges:
+        R_t = [t]
+        R_l = self.TypeAgents
+        R_i = self.AgentIndexSet
+        R_j = self.cellIDList()
+        R_k = range(0, len(self.Cells))
+
+        # Define IDs:
+        idt = [t for t in R_t]
+        idx = []
+        for l in R_l:
+            for i in range(len(R_i)):
+                if l == i:
+                    for a in R_i[i]:
+                        idx.append((l, a))
+        idj = [j for j in R_j]
+        idk = [j for j in R_k]
+
+        idj = N_set
+        idz = [(x, y, j, t) for x, y in idx for j in idj for t in R_t]
+
+        obj_func = 0
+
+        for j in idj:
+            f_j = self.findCellFromId(j).coverageRequirement - self.dictOfCoverage[j]
+            if f_j <= 0:
+                f_j = 100
+                obj_func += sum(f_j * z[l, i, j, t])
+            else:
+                obj_func += sum((1 / f_j) * z[l, i, j, t])
 
     def findCellCloserToACell(self, cell_id, cell_set):
         cell_list = []
@@ -465,6 +499,16 @@ class Instance:
         for cell in cell_list:
             distance_dict[cell.getID()] = self.distanceBtwTwoCells(cell_id, cell.getID())
         return self.findCellFromId(min(distance_dict, key=distance_dict.get))
+
+    def eleminateLeaderAgent(self):
+
+        agent_List = []
+
+        for agent in self.Agents:
+            if not agent.isLeader:
+                agent_List.append(agent)
+
+        self.Agents = agent_List
 
 
 

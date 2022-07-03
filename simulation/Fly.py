@@ -68,9 +68,13 @@ for k, v in visitedCell.items():
 
 # simulation.scanArea(client, instance, f_list, t=15)
 
-# simulation.waitASecond(client, instance, f_list)
+simulation.waitASecond(client, instance, f_list)
 
-simulation.moveBasePosition(client, instance, f_list, t=15)
+simulation.moveBasePosition(client, instance, f_list, t=20)
+
+simulation.waitASecond(client, instance, f_list)
+
+simulation.landing(client, instance, f_list)
 
 
 for agent in instance.Agents:

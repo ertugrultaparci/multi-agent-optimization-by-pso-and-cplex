@@ -1,5 +1,5 @@
 width,height,euclideanDist,numberOfCells,numUAVTypes,numTypelAgent,planningHorizon,periodLength,scanPercentage,alpha,Budget,,,,,,,,,,,,,,,,,,
-100,100,0,0,3,2,60,1,0,2,75,,,,,,,,,,,,,,,,,,
+100,100,0,0,3,2,60,1,0,2,100,,,,,,,,,,,,,,,,,,
 type,bandwith,cost,rComm,rSense,withinRCover,withinRComm,reachCell,dataPacket,eTrans,eReceive,eCon,eBat,maxLifetime,crDistance,minVel,maxVel,maxAcc,maxHAngle,minHAngle,maxAltitude,minAltitude,basePosition,initAltitude,initHeadAngle,scanTime,maxScanTime,minDistance,distanceBoundaryCell
 0,200,30,60,45,0,0,0,12,1.5,1,4,100,45,5,0,21,45,80,0,50,5,2,5,0,0.5,0,10,7
 1,100,26,50,45,0,0,0,9,3,2,2,200,20,6,0,21,55,80,0,60,10,7,10,0,1,0,10,7

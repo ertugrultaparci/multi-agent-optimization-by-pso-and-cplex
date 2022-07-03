@@ -143,7 +143,7 @@ def moveBasePosition(client, instance, f_list, t):
 
 def landing(client, instance, f_list):
     for j in instance.Agents:
-        f_list.append(client.landAsync(vehicle_name=j.getName()))
+        f_list.append(client.landAsync(5, vehicle_name=j.getName()))
 
     for c in f_list:
         c.join()
@@ -155,4 +155,3 @@ def landing(client, instance, f_list):
         client.enableApiControl(False, vehicle_name=j.getName())
 
     f_list.clear()
-    print("done.")

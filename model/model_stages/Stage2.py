@@ -224,7 +224,7 @@ def initialLocation(instance, filename):
 
             for agent in instance.Agents:
                 if var_list[0] == agent.getType() and var_list[1] == agent.getIndis():
-                    print(f' z_{agent.getType()}_{agent.getIndis()}_{instance.BoundaryCells[var_list[2]].getID()}_0')
+                    print(f'z_{agent.getType()}_{agent.getIndis()}_{instance.BoundaryCells[var_list[2]].getID()}_0 = 1')
                     agent.setCurrCell(instance.BoundaryCells[var_list[2]])
 
 

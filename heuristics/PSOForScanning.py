@@ -6,22 +6,22 @@ from model.model_stages.Stage2 import cellCenterListXLoc
 from model.model_stages.Stage4 import sigmaMatrix, findScannedCells, changeLoc
 
 
-def PSOforScanning(ins, MaxIt, nPop, w, wDamp, c1, c2, sigma_matrix, a_matrix):
+def PSOforScanning(instance, MaxIt, sigma_matrix, a_matrix, cost_func):
     # cost functions:
-    cost_function = ins.cost_func_for_stage4_pso
+    cost_function = instance.cost_func_for_stage4_pso
 
-    nVar = len(ins.Agents)  # number of unknown variables
+    nVar = len(instance.Agents)  # number of unknown variables
 
     # PARAMETERS OF PSO
     MaxIt = MaxIt  # maximum number of Iterations
-    nPop = nPop  # swarm size (population size)
+    nPop = 1  # swarm size (population size)
 
     # the following coefficient is stated as such in general PSO implementation:
-    w = w  # inertia coefficient
-    wDamp = wDamp  # damping ratio of inertia coefficient
+    w = 1  # inertia coefficient
+    wDamp = 0.99  # damping ratio of inertia coefficient
 
-    c1 = c1  # personal acceleration coefficient
-    c2 = c2  # social (global) coefficient
+    c1 = 2  # personal acceleration coefficient
+    c2 = 2 # social (global) coefficient
 
     # INITIALIZATION
     class Sol:
@@ -54,7 +54,7 @@ def PSOforScanning(ins, MaxIt, nPop, w, wDamp, c1, c2, sigma_matrix, a_matrix):
                 # initialize initial cells as initial position:
                 position_list = []
 
-                for agent in ins.Agents:
+                for agent in instance.Agents:
                     position_list.append(agent.getCurrCell().getCenter())
 
                 p.Position = position_list
@@ -75,17 +75,17 @@ def PSOforScanning(ins, MaxIt, nPop, w, wDamp, c1, c2, sigma_matrix, a_matrix):
 
                 # update global best:
                 if particle.BestCost < glob.BestCost:
-                    cell = [agent.getCurrCell().getID() for agent in ins.Agents]
+                    cell = [agent.getCurrCell().getID() for agent in instance.Agents]
                     glob_cell = [a + 1 for a in cell]
-                    glob.BestPosition = [ins.findCellFromId(cell).getCenter() for cell in glob_cell]
+                    glob.BestPosition = [instance.findCellFromId(cell).getCenter() for cell in glob_cell]
 
-                    for k in range(len(ins.Agents)):
-                        ins.Agents[k].setCurrCell(ins.findCellFromId(glob_cell[k]))
+                    for k in range(len(instance.Agents)):
+                        instance.Agents[k].setCurrCell(instance.findCellFromId(glob_cell[k]))
 
                     glob.BestCost = cost_function()
 
-                    for k in range(len(ins.Agents)):
-                        ins.Agents[k].setCurrCell(ins.findCellFromId(cell[k]))
+                    for k in range(len(instance.Agents)):
+                        instance.Agents[k].setCurrCell(instance.findCellFromId(cell[k]))
 
         def getPList(self):
             c = []
@@ -120,49 +120,69 @@ def PSOforScanning(ins, MaxIt, nPop, w, wDamp, c1, c2, sigma_matrix, a_matrix):
             particle.Velocity = calculateOperation(calculateOperation(v1, v2, "+"), v3, "+")
 
             # hold previous position:
-            previous_position = findAgentCells(ins)
+            previous_position = findAgentCells(instance)
+
+            # decrease coverage requirement of initial cells:
+            # check coverage:
+            a = findScannedCells(instance, a_matrix)
+            print('which cells scanned in this iteration:', a)
+            print('which cells completed:', instance.coveredCells)
+
+            t=0
+            # find visited cells to use in 'Airsim Simulation'
+            findRoute(instance, t=0)
 
             # update position
             particle.Position = calculateOperation(particle.Position, particle.Velocity, "+")
 
             # find reachable sets:
-            N_set = findNSet(ins, sigma_matrix=sigma_matrix)
+            N_set = findNSet(instance, sigma_matrix=sigma_matrix)
+            print('Nset', N_set)
 
             print('initial particle position', particle.Position)
-            findNewCells(ins, particle.Position, N_set)
-
-            cellCenterListXLoc(ins)
+            findNewCells(instance, particle.Position, N_set)
 
             print('final particle position', particle.Position)
-            print(findCellid(ins, particle.Position))
+            print(findCellid(instance, particle.Position))
 
-            for agent in ins.Agents:
+            for agent in instance.Agents:
                 print(f'agent type: {agent.getType()}, indis: {agent.getIndis()}, cell: {agent.getCurrCell().getID()}')
 
+            print(instance.connectivity_matrix())
+
             # check coverage:
-            findScannedCells(ins, a_matrix)
+            a = findScannedCells(instance, a_matrix)
+            print('which cells scanned in this iteration:', a)
+            print('which cells completed:', instance.coveredCells)
 
             # find visited cells to use in 'Airsim Simulation'
-            findRoute(ins, t=0)
+            findRoute(instance, t=0)
 
-            t=0
+            particle.Position = findPositon(instance)
 
-            particle.Position = findPositon(ins)
+            final_position = findAgentCells(instance)
+            print('final pos:', final_position)
 
-            final_position = findAgentCells(ins)
+            if previous_position == final_position and not all(x >= instance.Cells[0].coverageRequirement for x in instance.dictOfCoverage.values()):
+                changeLoc(instance)
 
-            if previous_position == final_position and not all(x >= ins.Cells[0].coverageRequirement for x in ins.dictOfCoverage.values()):
-                changeLoc(ins)
-
-                cellCenterListXLoc(ins)
+                cellCenterListXLoc(instance)
 
                 # find visited cells to use in 'Airsim Simulation'
-                findRoute(ins, t)
+                findRoute(instance, t)
 
                 # check coverage:
-                a = findScannedCells(ins, a_matrix)
+                a = findScannedCells(instance, a_matrix)
+                print('which cells scanned in this iteration:', a)
+                print('which cells completed:', instance.coveredCells)
 
-                particle.Position = findPositon(ins)
+                particle.Position = findPositon(instance)
+                print(findAgentCells(instance))
+
+                connectedness = math.pow(len(instance.Agents), 2) - instance.connectivity_matrix().values.sum()
+                print('connectedness:', connectedness)
+
+                print(instance.connectivity_matrix())
 
             # for k in range(len(ins.Agents)):
             # ins.Agents[k].setCurrCell(ins.findCellFromId(particle.Position[k]))
@@ -271,13 +291,20 @@ def findCloserCellWithCoordinates(instance, x_coord, y_coord, N_set):
 
 def findNewCells(instance, coord_list, N_set):
     pos = []
-    for i in range(len(instance.Agents)):
-        coords_tuple = coord_list[i]
-        cell = findCloserCellWithCoordinates(instance, coords_tuple[0], coords_tuple[1], N_set)
-        pos.append(cell.getCenter())
-        instance.Agents[i].setCurrCell(cell)
-        instance.cellCenter.pop(cell.getID())
-        N_set.remove(cell.getID())
+    connectedness = math.pow(len(instance.Agents),2) - instance.connectivity_matrix().values.sum()
+    print(connectedness)
+    while not connectedness == 0:
+        for i in range(len(instance.Agents)):
+            coords_tuple = coord_list[i]
+            cell = findCloserCellWithCoordinates(instance, coords_tuple[0], coords_tuple[1], N_set)
+            pos.append(cell.getCenter())
+            instance.Agents[i].setCurrCell(cell)
+            instance.cellCenter.pop(cell.getID())
+            N_set.remove(cell.getID())
+
+        cellCenterListXLoc(instance)
+        connectedness = math.pow(len(instance.Agents), 2) - instance.connectivity_matrix().sum()
+
 
 
 def findCellid(instance, pos):

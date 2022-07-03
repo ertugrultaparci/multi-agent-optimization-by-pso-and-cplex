@@ -37,6 +37,8 @@ def findRoute(instance, t):
 
     instance.visitedCells[str(t)] = a_list
 
+    return a_list
+
 
 def agentCellList(ins):
     my_list = []
@@ -60,10 +62,16 @@ def swarm(instance, optimization):
     sigma_matrix = sigmaMatrix(instance)
 
     # check coverage:
-    findScannedCells(instance, a_matrix)
+    a = findScannedCells(instance, a_matrix)
+    print('which cells scanned in this iteration:', a)
+    print('which cells completed:', instance.coveredCells)
 
     # find visited cells to use in 'Airsim Simulation'
     findRoute(instance, t=0)
+
+
+
+
     t = 1
     while not scanIsDone(instance):
 
@@ -91,7 +99,9 @@ def swarm(instance, optimization):
             changeLoc(instance)
 
             # find visited cells to use in 'Airsim Simulation'
-            findRoute(instance, t)
+            a = findRoute(instance, t)
+
+            print("cells in this iteration ", t, ":",   a)
 
             # check coverage:
             a = findScannedCells(instance, a_matrix)
@@ -111,5 +121,5 @@ def swarm(instance, optimization):
         file.write(str(instance.visitedCells))
 
 
-with ContextTimer("stage=%d" % 1):
-    swarm(instance, optimization)
+#with ContextTimer("stage=%d" % 1):
+    #swarm(instance, optimization)
