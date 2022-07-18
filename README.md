@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # Particle Swarm Optimization for Field Scanning Swarm Mission of Unmanned Aerial and Ground Vehicles
 
 Today, the use of UAVs and UAVs is very important for the early detection of 
