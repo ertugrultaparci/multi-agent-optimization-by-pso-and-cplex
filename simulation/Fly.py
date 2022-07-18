@@ -13,15 +13,10 @@ import simulation.simulation_multidrone as simulation
 import formation
 
 instance = Instance()
-instance.readInstance("C:/Users/ertug/OneDrive/Masaüstü/multi-agent-optimization-by-pso-and-cplex/model/model_input/Agents.csv")
+instance.readInstance("multi-agent-optimization-by-pso-and-cplex/model/model_input/Agents.csv")
 optimization = Optimization()
 
 swarm(instance, optimization)
-
-# Let's open simulation environment:
-time.sleep(2)
-#os.startfile("D:/AirSim Packages/MSBuild2018/WindowsNoEditor/MSBuild2018.exe") # Open any program, text or office document
-#time.sleep(10)
 
 client = airsim.MultirotorClient()
 client.confirmConnection()
@@ -49,7 +44,7 @@ time.sleep(1)
 #time.sleep(1)
 
 # Opening JSON file
-with open("C:/Users/ertug/OneDrive/Masaüstü/multi-agent-optimization-by-pso-and-cplex/model/model_output/visitedCell.txt") as f:
+with open("multi-agent-optimization-by-pso-and-cplex/model/model_output/visitedCell.txt") as f:
     contents = f.readlines()
 
 visitedCell = literal_eval(contents[0])

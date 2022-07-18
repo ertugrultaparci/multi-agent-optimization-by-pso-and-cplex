@@ -1,8 +1,4 @@
-import airsim
 import time
-
-
-# client = airsim.MultirotorClient()
 
 
 def drone_state(client, drone):

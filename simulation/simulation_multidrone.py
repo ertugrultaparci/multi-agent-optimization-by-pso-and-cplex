@@ -125,21 +125,6 @@ def moveBasePosition(client, instance, f_list, t):
 
     landing(client, instance, f_list)
 
-    """
-    for j in instance.Agents:
-        agent_base_position = j.basePosition
-        v_z = (agent_base_position[2] - formation.drone_state(client, j)['z']) / t
-        f_list.append(client.moveByVelocityAsync(0, 0, v_z, t, vehicle_name=j.getName()))
-
-    for f in f_list:
-        f.join()
-
-    time.sleep(1)
-
-    f_list.clear()
-    
-    """
-
 
 def landing(client, instance, f_list):
     for j in instance.Agents:

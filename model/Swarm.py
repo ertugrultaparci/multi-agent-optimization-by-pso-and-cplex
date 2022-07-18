@@ -10,24 +10,9 @@ import glob
 
 instance = Instance()
 instance.readInstance(
-    'C:/Users/ertug/OneDrive/Masaüstü/multi-agent-optimization-by-pso-and-cplex/model/model_input/Agents.csv')
+    'multi-agent-optimization-by-pso-and-cplex/model/model_input/Agents.csv')
 optimization = Optimization()
-"""
-optimization.Stage1(instance)
-optimization.Stage2(instance)
-instance.Agents[0].setCurrCell(instance.findCellFromId(99))
-optimization.Stage3(instance)
-optimization.Stage3_part2(instance)
-print(instance.communicationGraph())
-print(instance.connectivity_matrix())
 
-
-with ContextTimer("stage=%d" % 1):
-    optimization.Stage1(instance)
-
-with ContextTimer("stage=%d" % 2):
-    optimization.Stage2(instance)
-"""
 
 
 def findRoute(instance, t):
@@ -78,7 +63,7 @@ def swarm(instance, optimization):
         optimization.Stage4(instance, t, sigma_matrix)
 
         # find the path of the solution of stage 4:
-        filename_stage4solution = 'C:/Users/ertug/OneDrive/Masaüstü/multi-agent-optimization-by-pso-and-cplex/model/model_output/stage4solution.json'
+        filename_stage4solution = 'multi-agent-optimization-by-pso-and-cplex/model/model_output/stage4solution.json'
 
         # change agents location according to the solution of stage 4:
         stage4Solution(instance, filename_stage4solution)
@@ -116,10 +101,7 @@ def swarm(instance, optimization):
 
     # create a file named 'visitedCell.txt' to hold the route of agents according to stage 4:
     with open(
-            "C:/Users/ertug/OneDrive/Masaüstü/multi-agent-optimization-by-pso-and-cplex/model/model_output/visitedCell.txt",
+            "multi-agent-optimization-by-pso-and-cplex/model/model_output/visitedCell.txt",
             "w") as file:
         file.write(str(instance.visitedCells))
 
-
-#with ContextTimer("stage=%d" % 1):
-    #swarm(instance, optimization)

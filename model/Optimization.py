@@ -12,12 +12,12 @@ from model.model_stages.Stage3 import calculateRatio
 class Optimization:
     def __init__(self):
         self.L = None
-        self.filename_swarmModel1 = "C:/Users/ertug/OneDrive/Masaüstü/multi-agent-optimization-by-pso-and-cplex/model/model_output/swarmModel1.lp"
-        self.filename_stage1solution = "C:/Users/ertug/OneDrive/Masaüstü/multi-agent-optimization-by-pso-and-cplex/model/model_output/stage1solution.json"
-        self.filename_swarmModel2 = "C:/Users/ertug/OneDrive/Masaüstü/multi-agent-optimization-by-pso-and-cplex/model/model_output/swarmModel2.lp"
-        self.filename_stage2solution = "C:/Users/ertug/OneDrive/Masaüstü/multi-agent-optimization-by-pso-and-cplex/model/model_output/stage2solution.json"
-        self.filename_swarmModel4 = "C:/Users/ertug/OneDrive/Masaüstü/multi-agent-optimization-by-pso-and-cplex/model/model_output/swarmModel4.lp"
-        self.filename_stage4solution = "C:/Users/ertug/OneDrive/Masaüstü/multi-agent-optimization-by-pso-and-cplex/model/model_output/stage4solution.json"
+        self.filename_swarmModel1 = "multi-agent-optimization-by-pso-and-cplex/model/model_output/swarmModel1.lp"
+        self.filename_stage1solution = "multi-agent-optimization-by-pso-and-cplex/model/model_output/stage1solution.json"
+        self.filename_swarmModel2 = "multi-agent-optimization-by-pso-and-cplex/model/model_output/swarmModel2.lp"
+        self.filename_stage2solution = "multi-agent-optimization-by-pso-and-cplex/model/model_output/stage2solution.json"
+        self.filename_swarmModel4 = "multi-agent-optimization-by-pso-and-cplex/model/model_output/swarmModel4.lp"
+        self.filename_stage4solution = "multi-agent-optimization-by-pso-and-cplex/model/model_output/stage4solution.json"
 
     def Stage1(self, instance):
 
@@ -220,8 +220,6 @@ class Optimization:
         #PSO(instance, MaxIt=100, nPop=1, w=1, wDamp=0.99, c1=2, c2=2)
         #PSOwithcoords(instance, MaxIt=100, nPop=1, w=1, wDamp=0.99, c1=2, c2=2)
 
-        #initial_location = [80, 39, 50, 97]  # cost with 100
-        #initial_location = [80, 98, 97] #cost 70
         initial_location = [80, 39, 40, 98]
 
 
