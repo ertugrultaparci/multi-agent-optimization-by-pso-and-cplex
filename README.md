@@ -1,13 +1,13 @@
 # Particle Swarm Optimization for Field Scanning Swarm Mission of Unmanned Aerial and Ground Vehicles
 
-Today, the use of UAVs and UAVs is very important for the early detection of 
-increasing forest fires and their response as soon as possible. 
+Today, the use of UAVs and UAVs is very important for the **early detection of 
+increasing forest fires** and their response as soon as possible. 
 
 In this project, the most suitable swarm members will be selected within the 
-budget allocated for the area scanning task from the UAVs and UAVs in the 
+budget allocated for the area scanning task from the **UAVs** and **UGVs** in the 
 inventory in order to scan the area, and the disaster 
 area will be scanned as soon as possible without being centrally controlled 
-(autonomously) with an online algorithm. 
+(autonomously) with an **online algorithm**. 
 
 Swarm members will be selected to be equipped to complete this task as soon 
 as possible. Thus, scanning can be performed with minimum energy and cost. 
@@ -50,7 +50,7 @@ will be included in the swarm.
 
 ### Simulation Video:
 
-The above mentioned 4 stages are modeled in AirSim simulation environment. 
+The above-mentioned 4 stages are modeled in AirSim simulation environment. 
 In the example used for the calculation; The swarm, consisting 4 agents, 
 scanned a 100x100 target area for a total of 10 periods, scanning each cell twice. 
 The video below demonstrates the area scan process in a simulation of this 
